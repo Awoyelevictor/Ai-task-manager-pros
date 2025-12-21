@@ -1,0 +1,9 @@
+
+{
+  "name": "AI Task Master Pro",
+  "description": "A sophisticated task manager powered by Gemini AI to help you prioritize and stay motivated.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ]
+}
