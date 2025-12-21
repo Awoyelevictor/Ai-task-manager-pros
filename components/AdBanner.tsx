@@ -18,10 +18,25 @@ const AdBanner: React.FC = () => {
     // Web browser → allow AdSense
     setShouldShow(true);
 
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.error("AdMob Web Error:", e);
+    // Push AdSense safely
+    if ((window as any).adsbygoogle) {
+      try {
+        (window as any).adsbygoogle.push({});
+      } catch (e) {
+        console.warn("AdMob Web Error:", e);
+      }
+    } else {
+      // Create a small timeout in case the script loads after React
+      const interval = setInterval(() => {
+        if ((window as any).adsbygoogle) {
+          try {
+            (window as any).adsbygoogle.push({});
+            clearInterval(interval);
+          } catch (e) {
+            console.warn("AdMob Web Error:", e);
+          }
+        }
+      }, 500);
     }
   }, []);
 
