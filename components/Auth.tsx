@@ -43,18 +43,18 @@ export const Auth: React.FC<AuthProps> = ({ onAuth }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
+    <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-slate-50">
       <div className="w-full max-w-md">
-        <div className="text-center mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div className="inline-flex p-4 rounded-3xl bg-indigo-600 mb-4 shadow-xl shadow-indigo-200">
-            <Sparkles className="w-8 h-8 text-white" />
+        <div className="text-center mb-8 sm:mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="inline-flex p-3 sm:p-4 rounded-3xl bg-indigo-600 mb-4 shadow-xl shadow-indigo-200">
+            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">Task Master <span className="text-indigo-600">Pro</span></h1>
-          <p className="text-slate-500 font-medium mt-2">Elevate your productivity with AI</p>
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Task Master <span className="text-indigo-600">Pro</span></h1>
+          <p className="text-slate-500 font-medium mt-2 text-sm sm:text-base">Elevate your productivity with AI</p>
         </div>
 
-        <div className="bg-white p-8 rounded-[2.5rem] shadow-2xl shadow-indigo-100 border border-slate-100 animate-in fade-in zoom-in duration-500">
-          <h2 className="text-2xl font-bold text-slate-800 mb-6">{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
+        <div className="bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl shadow-indigo-100 border border-slate-100 animate-in fade-in zoom-in duration-500">
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-800 mb-6">{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
           
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
@@ -65,7 +65,7 @@ export const Auth: React.FC<AuthProps> = ({ onAuth }) => {
                     required
                     type="text"
                     placeholder="Full Name"
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-400 transition-all font-semibold"
+                    className="w-full pl-12 pr-4 py-3 sm:py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-400 transition-all font-semibold text-sm sm:text-base"
                     onChange={e => setFormData({...formData, name: e.target.value})}
                   />
                 </div>
@@ -75,10 +75,10 @@ export const Auth: React.FC<AuthProps> = ({ onAuth }) => {
                     required
                     type="date"
                     title="Your Birthday"
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-400 transition-all font-semibold text-slate-600"
+                    className="w-full pl-12 pr-4 py-3 sm:py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-400 transition-all font-semibold text-slate-600 text-sm sm:text-base"
                     onChange={e => setFormData({...formData, birthday: e.target.value})}
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-300 uppercase">Birthday</span>
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-300 uppercase hidden xs:block">Birthday</span>
                 </div>
               </>
             )}
@@ -88,7 +88,7 @@ export const Auth: React.FC<AuthProps> = ({ onAuth }) => {
                 required
                 type="email"
                 placeholder="Email Address"
-                className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-400 transition-all font-semibold"
+                className="w-full pl-12 pr-4 py-3 sm:py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-400 transition-all font-semibold text-sm sm:text-base"
                 onChange={e => setFormData({...formData, email: e.target.value})}
               />
             </div>
@@ -98,14 +98,14 @@ export const Auth: React.FC<AuthProps> = ({ onAuth }) => {
                 required
                 type="password"
                 placeholder="Password"
-                className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-400 transition-all font-semibold"
+                className="w-full pl-12 pr-4 py-3 sm:py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-400 transition-all font-semibold text-sm sm:text-base"
                 onChange={e => setFormData({...formData, password: e.target.value})}
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-lg shadow-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-2 group"
+              className="w-full bg-slate-900 text-white py-3 sm:py-4 rounded-2xl font-black text-lg shadow-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-2 group"
             >
               {isLogin ? 'Login' : 'Signup'}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
