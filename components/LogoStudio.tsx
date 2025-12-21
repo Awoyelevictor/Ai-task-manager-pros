@@ -84,15 +84,15 @@ const LogoStudio: React.FC<LogoStudioProps> = ({ isOpen, onClose }) => {
         </div>
       )}
 
-      <div className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col h-[90vh] max-h-[800px]">
+      <div className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col h-auto max-h-[90vh]">
         {/* Header */}
-        <div className="p-6 border-b border-slate-800 flex justify-between items-center bg-gradient-to-r from-yellow-500/10 to-transparent">
+        <div className="p-4 sm:p-6 border-b border-slate-800 flex justify-between items-center bg-gradient-to-r from-yellow-500/10 to-transparent flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-yellow-500 rounded-xl shadow-lg shadow-yellow-500/20">
               <Zap className="w-5 h-5 text-slate-900 fill-slate-900" />
             </div>
             <div>
-              <h2 className="text-xl font-black text-white leading-none">Nano Banana</h2>
+              <h2 className="text-lg sm:text-xl font-black text-white leading-none">Nano Banana</h2>
               <p className="text-[10px] font-bold text-yellow-500/70 uppercase tracking-widest mt-1">Instant App Icon Studio</p>
             </div>
           </div>
@@ -102,15 +102,15 @@ const LogoStudio: React.FC<LogoStudioProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Content */}
-        <div className="flex-grow overflow-y-auto p-6 space-y-8 custom-scrollbar pb-10">
+        <div className="flex-grow overflow-y-auto p-4 sm:p-6 space-y-6 sm:space-y-8 custom-scrollbar pb-8">
           {/* Preview Area */}
-          <div className="relative aspect-square w-full max-w-[260px] mx-auto">
+          <div className="relative aspect-square w-full max-w-[200px] sm:max-w-[260px] mx-auto">
             <div className={`absolute inset-0 bg-yellow-500/10 rounded-[3rem] blur-3xl transition-all duration-1000 ${isGenerating ? 'animate-pulse opacity-100' : 'opacity-0'}`}></div>
-            <div className="relative w-full h-full bg-slate-950 rounded-[3rem] border-2 border-slate-800 flex items-center justify-center overflow-hidden shadow-2xl ring-1 ring-white/5">
+            <div className="relative w-full h-full bg-slate-950 rounded-[2rem] sm:rounded-[3rem] border-2 border-slate-800 flex items-center justify-center overflow-hidden shadow-2xl ring-1 ring-white/5">
               {isGenerating ? (
                 <div className="flex flex-col items-center gap-4">
                   <div className="relative">
-                    <Loader2 className="w-12 h-12 text-yellow-500 animate-spin" />
+                    <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 text-yellow-500 animate-spin" />
                     <Sparkles className="absolute -top-1 -right-1 w-4 h-4 text-white animate-pulse" />
                   </div>
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] animate-pulse">Nano Banana is cooking...</p>
@@ -127,7 +127,7 @@ const LogoStudio: React.FC<LogoStudioProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Prompt Area */}
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Icon Topic</label>
             <div className="relative">
               <textarea
@@ -141,17 +141,17 @@ const LogoStudio: React.FC<LogoStudioProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Style Selector */}
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             <div className="flex justify-between items-center ml-1">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Art Direction</label>
               <span className="text-[9px] font-bold text-yellow-500/50 uppercase tracking-widest">Nano-optimized</span>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               {STYLES.map((style) => (
                 <button
                   key={style.id}
                   onClick={() => setSelectedStyle(style)}
-                  className={`flex flex-col items-start p-4 rounded-2xl border-2 transition-all active:scale-95 ${
+                  className={`flex flex-col items-start p-3 sm:p-4 rounded-2xl border-2 transition-all active:scale-95 ${
                     selectedStyle.id === style.id 
                       ? 'bg-yellow-500/5 border-yellow-500 shadow-lg shadow-yellow-500/5' 
                       : 'bg-slate-950 border-slate-800 hover:border-slate-700'
@@ -160,8 +160,8 @@ const LogoStudio: React.FC<LogoStudioProps> = ({ isOpen, onClose }) => {
                   <div className={`p-2 rounded-lg mb-2 transition-colors ${selectedStyle.id === style.id ? 'bg-yellow-500 text-slate-900' : 'bg-slate-800 text-slate-400'}`}>
                     {style.icon}
                   </div>
-                  <span className={`text-[11px] font-black ${selectedStyle.id === style.id ? 'text-white' : 'text-slate-400'}`}>{style.name}</span>
-                  <span className="text-[9px] text-slate-600 font-medium leading-tight mt-0.5">{style.desc}</span>
+                  <span className={`text-[10px] sm:text-[11px] font-black ${selectedStyle.id === style.id ? 'text-white' : 'text-slate-400'}`}>{style.name}</span>
+                  <span className="text-[8px] sm:text-[9px] text-slate-600 font-medium leading-tight mt-0.5">{style.desc}</span>
                 </button>
               ))}
             </div>
@@ -169,7 +169,7 @@ const LogoStudio: React.FC<LogoStudioProps> = ({ isOpen, onClose }) => {
 
           {/* History Gallery */}
           {history.length > 0 && (
-            <div className="space-y-3 pt-4">
+            <div className="space-y-3 pt-2">
               <div className="flex items-center gap-2 ml-1">
                 <History className="w-3 h-3 text-slate-500" />
                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Recent Generations</label>
@@ -179,7 +179,7 @@ const LogoStudio: React.FC<LogoStudioProps> = ({ isOpen, onClose }) => {
                   <button
                     key={icon.id}
                     onClick={() => setResultImage(icon.url)}
-                    className="flex-shrink-0 w-16 h-16 rounded-xl border border-slate-800 overflow-hidden hover:border-yellow-500 transition-colors active:scale-90"
+                    className="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl border border-slate-800 overflow-hidden hover:border-yellow-500 transition-colors active:scale-90"
                   >
                     <img src={icon.url} className="w-full h-full object-cover" alt="History" />
                   </button>
@@ -190,9 +190,9 @@ const LogoStudio: React.FC<LogoStudioProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Footer Actions */}
-        <div className="p-6 bg-slate-950 border-t border-slate-800 flex flex-col gap-4 shadow-2xl">
+        <div className="p-4 sm:p-6 bg-slate-950 border-t border-slate-800 flex flex-col gap-3 sm:gap-4 shadow-2xl flex-shrink-0">
           {resultImage ? (
-            <div className="flex gap-4">
+            <div className="flex gap-3 sm:gap-4">
               <button 
                 onClick={() => setResultImage(null)}
                 className="flex-grow py-4 bg-slate-800 text-slate-300 rounded-2xl font-black text-xs hover:bg-slate-700 transition-all uppercase tracking-widest"
@@ -211,9 +211,9 @@ const LogoStudio: React.FC<LogoStudioProps> = ({ isOpen, onClose }) => {
             <button 
               onClick={handleGenerate}
               disabled={isGenerating}
-              className="w-full py-5 bg-yellow-500 text-slate-950 rounded-2xl font-black text-base shadow-xl shadow-yellow-500/20 disabled:opacity-50 hover:bg-yellow-400 active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-widest"
+              className="w-full py-4 sm:py-5 bg-yellow-500 text-slate-950 rounded-2xl font-black text-sm sm:text-base shadow-xl shadow-yellow-500/20 disabled:opacity-50 hover:bg-yellow-400 active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-widest"
             >
-              {isGenerating ? <Loader2 className="w-6 h-6 animate-spin" /> : <Sparkles className="w-5 h-5 fill-slate-950" />}
+              {isGenerating ? <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin" /> : <Sparkles className="w-5 h-5 fill-slate-950" />}
               {isGenerating ? 'Rendering...' : 'Generate with Nano Banana'}
             </button>
           )}
