@@ -12,9 +12,8 @@ const AdBanner: React.FC = () => {
       if (platform === 'android' || platform === 'ios') {
         setIsNative(true);
         try {
-          await AdMob.initialize({
-            requestTrackingAuthorization: true,
-          });
+          // Fix: Removed 'requestTrackingAuthorization' which is not a valid property in AdMobInitializationOptions.
+          await AdMob.initialize({});
           setIsInitialized(true);
 
           await AdMob.showBanner({
