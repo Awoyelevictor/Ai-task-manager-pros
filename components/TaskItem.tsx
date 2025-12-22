@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Task } from '../types';
 import { CheckCircle2, Circle, Trash2, Clock, AlertTriangle, Save, X, Bell, BellOff, ChevronDown } from 'lucide-react';
@@ -70,7 +69,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onUpdate, onDelete 
       <button 
         onClick={() => !isEditing && onToggle(task.id)}
         disabled={isEditing}
-        className="flex-shrink-0 relative focus:outline-none disabled:opacity-50"
+        className="flex-shrink-0 relative focus:outline-none disabled:opacity-50 min-w-[32px] min-h-[32px] flex items-center justify-center"
       >
         <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full border-2 transition-all flex items-center justify-center ${
           task.completed 
@@ -87,33 +86,33 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onUpdate, onDelete 
 
       <div className="flex-grow min-w-0">
         {isEditing ? (
-          <div className="space-y-2 animate-in fade-in slide-in-from-left-2">
+          <div className="space-y-3 animate-in fade-in slide-in-from-left-2">
             <input
               ref={inputRef}
               type="text"
               value={editText}
               onChange={(e) => setEditText(e.target.value)}
               onKeyDown={onKeyDown}
-              className="w-full bg-slate-50 px-3 py-2 rounded-xl text-sm font-bold border-2 border-indigo-200 focus:border-indigo-500 focus:ring-0 outline-none"
+              className="w-full bg-slate-50 px-3 py-3 rounded-xl text-sm font-bold border-2 border-indigo-200 focus:border-indigo-500 focus:ring-0 outline-none"
             />
-            <div className="flex flex-col sm:flex-row gap-2">
-              <div className="flex items-center gap-2">
-                <div className="relative group flex-grow sm:flex-grow-0">
-                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400" />
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <div className="relative group flex-1">
+                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <input
                     type="datetime-local"
                     value={editDate}
                     onChange={(e) => setEditDate(e.target.value)}
-                    className="w-full sm:w-auto pl-8 pr-3 py-1.5 bg-slate-50 border-none rounded-lg text-[10px] font-black text-slate-600 outline-none"
+                    className="w-full pl-9 pr-3 py-2 bg-slate-50 border-none rounded-xl text-xs font-black text-slate-600 outline-none"
                   />
                 </div>
                 
-                <div className="relative group flex-grow sm:flex-grow-0">
-                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none" />
+                <div className="relative group flex-1">
+                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                   <select
                     value={editPriority}
                     onChange={(e) => setEditPriority(e.target.value as any)}
-                    className="w-full sm:w-auto appearance-none pl-3 pr-7 py-1.5 bg-slate-50 border-none rounded-lg text-[10px] font-black text-slate-600 outline-none capitalize"
+                    className="w-full appearance-none pl-3 pr-7 py-2 bg-slate-50 border-none rounded-xl text-xs font-black text-slate-600 outline-none capitalize"
                   >
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
@@ -122,12 +121,12 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onUpdate, onDelete 
                 </div>
               </div>
 
-              <div className="flex justify-end gap-1">
-                <button onClick={handleSave} className="flex-1 sm:flex-none p-2 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors flex items-center justify-center">
-                  <Save className="w-4 h-4" />
+              <div className="flex gap-2 pt-1">
+                <button onClick={handleSave} className="flex-1 p-3 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors flex items-center justify-center">
+                  <Save className="w-5 h-5" />
                 </button>
-                <button onClick={handleCancel} className="flex-1 sm:flex-none p-2 text-rose-500 bg-rose-50 hover:bg-rose-100 rounded-lg transition-colors flex items-center justify-center">
-                  <X className="w-4 h-4" />
+                <button onClick={handleCancel} className="flex-1 p-3 text-rose-500 bg-rose-50 hover:bg-rose-100 rounded-xl transition-colors flex items-center justify-center">
+                  <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
@@ -137,26 +136,21 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onUpdate, onDelete 
             className="cursor-pointer select-none group/text" 
             onClick={() => !task.completed && setIsEditing(true)}
           >
-            <div className="flex flex-wrap items-center gap-2 mb-1">
+            <div className="flex flex-wrap items-center gap-2 mb-1.5">
               <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider border ${getPriorityColor(task.priority)}`}>
                 {task.priority}
               </span>
-              {!task.completed && (
-                <span className="text-[8px] text-slate-300 opacity-0 group-hover/text:opacity-100 transition-opacity font-bold uppercase tracking-widest italic hidden sm:inline">
-                  Tap to edit
-                </span>
-              )}
             </div>
             
-            <h3 className={`text-sm sm:text-base font-bold transition-all break-words ${
+            <h3 className={`text-sm sm:text-base font-bold transition-all break-words leading-tight ${
               task.completed ? 'text-slate-400 line-through decoration-2' : 'text-slate-800'
             }`}>
               {task.text}
             </h3>
             
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
               {task.dueDate && (
-                <div className={`flex items-center gap-1.5 mt-1.5 text-[10px] font-black uppercase tracking-widest ${
+                <div className={`flex items-center gap-1.5 mt-1 text-[10px] font-black uppercase tracking-widest ${
                   isOverdue ? 'text-rose-500' : isDueSoon ? 'text-amber-500' : 'text-slate-400'
                 }`}>
                   {isOverdue ? <AlertTriangle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
@@ -166,14 +160,12 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onUpdate, onDelete 
                     hour: '2-digit', 
                     minute: '2-digit' 
                   })}
-                  {isOverdue && <span className="ml-1 px-1 bg-rose-100 rounded">Overdue</span>}
-                  {isDueSoon && <span className="ml-1 px-1 bg-amber-100 rounded">Soon</span>}
                 </div>
               )}
               {task.dueDate && !task.completed && (
                 <button 
                   onClick={toggleAlarm}
-                  className={`mt-1.5 p-1 rounded transition-colors ${task.alarmEnabled ? 'text-indigo-500 bg-indigo-50' : 'text-slate-300 hover:text-slate-400'}`}
+                  className={`mt-1 p-1.5 -ml-1.5 rounded-lg transition-colors ${task.alarmEnabled ? 'text-indigo-500 bg-indigo-50' : 'text-slate-300 hover:text-slate-400'}`}
                 >
                   {task.alarmEnabled ? <Bell className="w-3 h-3" /> : <BellOff className="w-3 h-3" />}
                 </button>
@@ -189,7 +181,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onUpdate, onDelete 
             e.stopPropagation();
             onDelete(task.id);
           }}
-          className="flex-shrink-0 p-2 text-slate-200 hover:text-rose-50 hover:bg-rose-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100"
+          className="flex-shrink-0 p-3 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
         >
           <Trash2 className="w-5 h-5" />
         </button>
