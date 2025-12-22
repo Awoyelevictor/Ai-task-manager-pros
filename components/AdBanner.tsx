@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { AdMob, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 
@@ -59,7 +58,7 @@ const AdBanner: React.FC = () => {
                style={{ display: 'inline-block', width: '320px', height: '50px' }}
                data-ad-client="ca-app-pub-4481364556222677"
                data-ad-slot="9760544752"></ins>
-          
+
           {/* Debug Visual Placeholder (Remove in production if needed, or keep as fallback) */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
              <span className="text-[10px] font-bold text-slate-400 italic">Sponsored Content</span>
