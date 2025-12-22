@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Sparkles, LayoutList, Calendar, Bell, Mic, MicOff, Trash2, CheckCircle2, AlarmClock, BellOff, X, Clock, LogOut, Sun, Moon, Sunset, PartyPopper, TreePine, Filter, SlidersHorizontal, ChevronDown, Ghost, Snowflake, Leaf, Flower, MessageSquareCode, Palette } from 'lucide-react';
+import { Sparkles, LayoutList, Bell, Mic, MicOff, Trash2, CheckCircle2, AlarmClock, BellOff, X, Clock, LogOut, Sun, Moon, Sunset, PartyPopper, TreePine, Filter, SlidersHorizontal, ChevronDown, Ghost, Snowflake, Leaf, Flower, MessageSquareCode, Palette } from 'lucide-react';
 import { Task, User } from './types';
 import TaskItem from './components/TaskItem';
 import AIModal from './components/AIModal';
@@ -35,13 +34,13 @@ const App: React.FC = () => {
   const [aiContent, setAIContent] = useState('');
   const [isAILoading, setIsAILoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [notificationStatus, setNotificationStatus] = useState<NotificationPermission>('default');
   const [activeAlarm, setActiveAlarm] = useState<Task | null>(null);
   
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'completed'>('all');
   const [filterPriority, setFilterPriority] = useState<'all' | 'low' | 'medium' | 'high'>('all');
 
   const alarmAudio = useRef<HTMLAudioElement | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -58,15 +57,11 @@ const App: React.FC = () => {
   useEffect(() => {
     alarmAudio.current = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
     alarmAudio.current.loop = true;
-    if ("Notification" in window) {
-      setNotificationStatus(Notification.permission);
-    }
   }, []);
 
   const requestPermissions = async () => {
     if ("Notification" in window) {
-      const permission = await Notification.requestPermission();
-      setNotificationStatus(permission);
+      await Notification.requestPermission();
     }
     alarmAudio.current?.play().then(() => {
       alarmAudio.current?.pause();
@@ -210,8 +205,157 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`flex flex-col min-h-screen max-w-2xl mx-auto pb-52 relative transition-colors duration-1000 ${theme.bg} ${theme.text}`}>
-      {/* Alarm Overlay */}
+    <div className={`fixed inset-0 flex flex-col transition-colors duration-1000 ${theme.bg} ${theme.text}`}>
+      
+      {/* FIXED TOP HEADER */}
+      <header className={`z-50 px-4 pt-[max(env(safe-area-inset-top),16px)] pb-4 bg-white/70 backdrop-blur-xl border-b border-slate-200/50 transition-all`}>
+        <div className="max-w-2xl mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Sparkles className={`w-6 h-6 ${theme.accent}`} />
+            <h1 className="text-lg sm:text-xl font-black tracking-tight">Master Pro</h1>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={() => setIsLogoStudioOpen(true)} className="p-2 text-indigo-400 bg-white/80 rounded-full shadow-sm hover:scale-110 transition-transform active:scale-95">
+              <Palette className="w-5 h-5" />
+            </button>
+            <button onClick={requestPermissions} className="p-2 text-slate-400 bg-white/80 rounded-full shadow-sm hover:scale-110 transition-transform active:scale-95">
+              <Bell className="w-5 h-5" />
+            </button>
+            <button onClick={handleLogout} className="p-2 text-rose-400 bg-white/80 rounded-full shadow-sm hover:scale-110 transition-transform active:scale-95">
+              <LogOut className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </header>
+      
+      {/* SCROLLABLE MAIN CONTENT */}
+      <div 
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto overflow-x-hidden w-full no-scrollbar"
+      >
+        <div className="max-w-2xl mx-auto w-full px-4 sm:px-6 py-6 space-y-5">
+          
+          {/* Dynamic Greeting Hero */}
+          <div className={`bg-gradient-to-br ${theme.gradient} rounded-[2rem] p-6 sm:p-8 text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden group min-h-[140px] flex flex-col justify-center`}>
+            <div className="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+            <div className="absolute bottom-4 right-4 opacity-10">
+              {currentTheme === 'winter' && <Snowflake className="w-24 h-24" />}
+              {currentTheme === 'spring' && <Flower className="w-24 h-24" />}
+              {currentTheme === 'summer' && <Sun className="w-24 h-24" />}
+              {currentTheme === 'autumn' && <Leaf className="w-24 h-24" />}
+              {currentTheme === 'halloween' && <Ghost className="w-24 h-24" />}
+              {currentTheme === 'christmas' && <TreePine className="w-24 h-24" />}
+              {currentTheme === 'birthday' && <PartyPopper className="w-24 h-24" />}
+            </div>
+            <div className="relative z-10 flex items-center justify-between">
+              <div className="space-y-1">
+                <h2 className="text-xl sm:text-2xl font-black">{greeting?.text}</h2>
+                <p className="text-white/80 text-sm sm:text-base font-medium leading-relaxed max-w-[70%]">{greeting?.subtext}</p>
+              </div>
+              <div className="bg-white/20 p-3 sm:p-4 rounded-3xl backdrop-blur-md hidden xs:block">
+                {greeting?.icon === 'sun' && <Sun className="w-6 h-6 sm:w-8 sm:h-8" />}
+                {greeting?.icon === 'sunset' && <Sunset className="w-6 h-6 sm:w-8 sm:h-8" />}
+                {greeting?.icon === 'moon' && <Moon className="w-6 h-6 sm:w-8 sm:h-8" />}
+                {greeting?.icon === 'party' && <PartyPopper className="w-6 h-6 sm:w-8 sm:h-8" />}
+                {greeting?.icon === 'holiday' && (currentTheme === 'christmas' ? <TreePine className="w-6 h-6 sm:w-8 sm:h-8" /> : <Ghost className="w-6 h-6 sm:w-8 sm:h-8" />)}
+              </div>
+            </div>
+          </div>
+
+          {/* Input Card */}
+          <form onSubmit={addTask} className="bg-white p-4 sm:p-5 rounded-3xl shadow-lg shadow-slate-200/50 border border-slate-100 space-y-3 sm:space-y-4">
+            <div className="flex gap-3">
+              <div className="flex-grow relative group">
+                <LayoutList className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input type="text" value={taskInput} onChange={(e) => setTaskInput(e.target.value)} placeholder="Next objective..." className="w-full pl-12 pr-12 py-3.5 sm:py-4 bg-slate-50/50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-400 transition-all text-slate-800 font-semibold text-sm sm:text-base placeholder:text-slate-400" />
+                <button type="button" onClick={startVoiceInput} className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${isListening ? 'bg-rose-100 text-rose-600 animate-pulse' : 'text-slate-400 hover:text-indigo-500'}`}>{isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}</button>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 sm:flex sm:items-center gap-2">
+              <div className="relative group col-span-1 sm:col-auto sm:min-w-[120px]">
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                <select value={taskPriority} onChange={(e) => setTaskPriority(e.target.value as any)} className="appearance-none w-full pl-3 pr-8 py-3 bg-slate-50/50 border-none rounded-xl text-xs font-bold text-slate-600 focus:ring-2 focus:ring-indigo-400 cursor-pointer h-full">
+                  <option value="low">Low Priority</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High Priority</option>
+                </select>
+              </div>
+              
+              <input 
+                type="datetime-local" 
+                value={dueDate} 
+                onChange={(e) => setDueDate(e.target.value)} 
+                className="col-span-1 sm:col-auto sm:flex-grow pl-3 pr-2 py-3 bg-slate-50/50 border-none rounded-xl text-xs font-bold text-slate-600 min-w-0 h-full" 
+              />
+              
+              <button type="submit" className={`col-span-2 sm:col-auto ${theme.primary} text-white px-6 sm:px-8 py-3.5 rounded-xl font-bold shadow-lg active:scale-95 transition-transform text-sm sm:text-base mt-1 sm:mt-0 flex items-center justify-center`}>
+                Add Task
+              </button>
+            </div>
+          </form>
+
+          {/* Filtering */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 mb-1 px-1 opacity-60"><SlidersHorizontal className="w-3 h-3" /><h3 className="text-[10px] font-black uppercase tracking-widest">Filter Vault</h3></div>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <div className="flex bg-white/50 p-1 rounded-xl shadow-sm border border-slate-100 overflow-x-auto no-scrollbar">
+                {(['all', 'pending', 'completed'] as const).map((status) => (
+                  <button key={status} onClick={() => setFilterStatus(status)} className={`flex-shrink-0 px-4 py-2 rounded-lg text-xs font-bold transition-all capitalize min-w-[70px] ${filterStatus === status ? `${theme.primary} text-white shadow-md` : 'text-slate-500 hover:text-indigo-600'}`}>{status}</button>
+                ))}
+              </div>
+              <div className="flex bg-white/50 p-1 rounded-xl shadow-sm border border-slate-100 overflow-x-auto no-scrollbar">
+                {(['all', 'high', 'medium', 'low'] as const).map((priority) => (
+                  <button key={priority} onClick={() => setFilterPriority(priority)} className={`flex-shrink-0 px-4 py-2 rounded-lg text-xs font-bold transition-all capitalize min-w-[70px] ${filterPriority === priority ? `${theme.primary} text-white shadow-md` : 'text-slate-500 hover:text-indigo-600'}`}>{priority === 'all' ? 'All' : priority}</button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Mission List */}
+          <div className="space-y-3 pb-64">
+            <div className="flex justify-between items-center px-1">
+              <h2 className="text-lg font-bold">{filterStatus === 'all' ? 'Your Missions' : `${filterStatus.charAt(0).toUpperCase() + filterStatus.slice(1)} Missions`}<span className="ml-2 text-sm opacity-50 font-medium">({sortedTasks.length})</span></h2>
+              {tasks.filter(t => t.completed).length > 0 && filterStatus !== 'pending' && (
+                <button onClick={() => setTasks(t => t.filter(x => !x.completed))} className="text-xs font-bold text-rose-500 hover:bg-rose-50 px-3 py-1.5 rounded-lg transition-colors">Clear Done</button>
+              )}
+            </div>
+            
+            {sortedTasks.length === 0 ? (
+              <div className="py-20 text-center space-y-4 opacity-30"><div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm"><Filter className="w-8 h-8" /></div><p className="text-sm font-bold">No missions found</p></div>
+            ) : (
+              sortedTasks.map(task => <TaskItem key={task.id} task={task} onToggle={toggleTask} onUpdate={updateTask} onDelete={deleteTask} />)
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* FIXED BOTTOM ACTION BAR & AD BANNERS */}
+      <footer className={`z-50 bg-white/90 backdrop-blur-xl border-t border-slate-200/50 px-4 pt-3 pb-[max(env(safe-area-inset-bottom),20px)] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]`}>
+        <div className="max-w-2xl mx-auto space-y-3">
+          <div className="flex justify-center items-stretch gap-3">
+            <button 
+              onClick={handleAskAI} 
+              className={`flex-grow group relative flex items-center justify-center gap-2 py-3.5 bg-slate-900 text-white rounded-2xl font-black text-sm sm:text-base shadow-xl active:scale-95 transition-all`}
+            >
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse text-indigo-400" />
+              <span>DAILY STRATEGY</span>
+            </button>
+            
+            <button 
+              onClick={() => setIsAIChatOpen(true)}
+              className={`flex-shrink-0 px-5 rounded-2xl shadow-xl bg-gradient-to-br ${theme.gradient} text-white active:scale-90 transition-all border border-white/20 flex items-center justify-center`}
+              title="AI Assistant"
+            >
+              <MessageSquareCode className="w-6 h-6" />
+            </button>
+          </div>
+          
+          <AdBanner />
+        </div>
+      </footer>
+
+      {/* Overlays */}
       {activeAlarm && (
         <div className={`fixed inset-0 z-[120] ${theme.primary} flex items-center justify-center p-6 text-white animate-in fade-in zoom-in duration-300`}>
           <div className="text-center space-y-8 max-w-sm w-full">
@@ -230,145 +374,6 @@ const App: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Header & Greeting */}
-      <header className="p-4 sm:p-6 pb-2 space-y-4 sm:space-y-6">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Sparkles className={`w-6 h-6 ${theme.accent}`} />
-            <h1 className="text-xl sm:text-2xl font-black tracking-tight">Master Pro</h1>
-          </div>
-          <div className="flex gap-2">
-            <button onClick={() => setIsLogoStudioOpen(true)} className="p-2 text-indigo-400 bg-white rounded-full shadow-sm hover:scale-110 transition-transform">
-              <Palette className="w-5 h-5" />
-            </button>
-            <button onClick={requestPermissions} className="p-2 text-slate-400 bg-white rounded-full shadow-sm hover:scale-110 transition-transform">
-              <Bell className="w-5 h-5" />
-            </button>
-            <button onClick={handleLogout} className="p-2 text-rose-400 bg-white rounded-full shadow-sm hover:scale-110 transition-transform">
-              <LogOut className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Dynamic Greeting Hero */}
-        <div className={`bg-gradient-to-br ${theme.gradient} rounded-[2rem] p-6 sm:p-8 text-white shadow-2xl relative overflow-hidden group`}>
-          <div className="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
-          <div className="absolute bottom-4 right-4 opacity-10">
-            {currentTheme === 'winter' && <Snowflake className="w-24 h-24" />}
-            {currentTheme === 'spring' && <Flower className="w-24 h-24" />}
-            {currentTheme === 'summer' && <Sun className="w-24 h-24" />}
-            {currentTheme === 'autumn' && <Leaf className="w-24 h-24" />}
-            {currentTheme === 'halloween' && <Ghost className="w-24 h-24" />}
-            {currentTheme === 'christmas' && <TreePine className="w-24 h-24" />}
-            {currentTheme === 'birthday' && <PartyPopper className="w-24 h-24" />}
-          </div>
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="space-y-1">
-              <h2 className="text-xl sm:text-2xl font-black">{greeting?.text}</h2>
-              <p className="text-white/80 text-sm sm:text-base font-medium">{greeting?.subtext}</p>
-            </div>
-            <div className="bg-white/20 p-3 sm:p-4 rounded-3xl backdrop-blur-md hidden xs:block">
-              {greeting?.icon === 'sun' && <Sun className="w-6 h-6 sm:w-8 sm:h-8" />}
-              {greeting?.icon === 'sunset' && <Sunset className="w-6 h-6 sm:w-8 sm:h-8" />}
-              {greeting?.icon === 'moon' && <Moon className="w-6 h-6 sm:w-8 sm:h-8" />}
-              {greeting?.icon === 'party' && <PartyPopper className="w-6 h-6 sm:w-8 sm:h-8" />}
-              {greeting?.icon === 'holiday' && (currentTheme === 'christmas' ? <TreePine className="w-6 h-6 sm:w-8 sm:h-8" /> : <Ghost className="w-6 h-6 sm:w-8 sm:h-8" />)}
-            </div>
-          </div>
-        </div>
-
-        {/* Input Card - Responsive Layout */}
-        <form onSubmit={addTask} className="bg-white p-4 sm:p-5 rounded-3xl shadow-xl border border-slate-100 space-y-3 sm:space-y-4">
-          <div className="flex gap-3">
-            <div className="flex-grow relative group">
-              <LayoutList className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input type="text" value={taskInput} onChange={(e) => setTaskInput(e.target.value)} placeholder="Next objective..." className="w-full pl-12 pr-12 py-3 sm:py-4 bg-slate-50/50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-400 transition-all text-slate-800 font-semibold text-sm sm:text-base" />
-              <button type="button" onClick={startVoiceInput} className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${isListening ? 'bg-rose-100 text-rose-600 animate-pulse' : 'text-slate-400 hover:text-indigo-500'}`}>{isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}</button>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3">
-            <div className="relative group col-span-1 sm:col-auto sm:min-w-[120px]">
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-              <select value={taskPriority} onChange={(e) => setTaskPriority(e.target.value as any)} className="appearance-none w-full pl-3 sm:pl-4 pr-8 sm:pr-10 py-3 bg-slate-50/50 border-none rounded-xl text-xs font-bold text-slate-600 focus:ring-2 focus:ring-indigo-400 cursor-pointer">
-                <option value="low">Low Priority</option>
-                <option value="medium">Medium</option>
-                <option value="high">High Priority</option>
-              </select>
-            </div>
-            
-            <input 
-              type="datetime-local" 
-              value={dueDate} 
-              onChange={(e) => setDueDate(e.target.value)} 
-              className="col-span-1 sm:col-auto sm:flex-grow pl-3 sm:pl-4 pr-3 py-3 bg-slate-50/50 border-none rounded-xl text-xs font-bold text-slate-600 min-w-0" 
-            />
-            
-            <button type="submit" className={`col-span-2 sm:col-auto ${theme.primary} text-white px-6 sm:px-8 py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-transform text-sm sm:text-base mt-1 sm:mt-0`}>
-              Add
-            </button>
-          </div>
-        </form>
-      </header>
-
-      <main className="p-4 sm:p-6">
-        <div className="space-y-4 mb-8">
-          <div className="flex items-center gap-2 mb-2 opacity-60"><SlidersHorizontal className="w-4 h-4" /><h3 className="text-xs font-black uppercase tracking-widest">Filter Vault</h3></div>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <div className="flex bg-white/50 p-1 rounded-xl shadow-sm border border-slate-100 overflow-x-auto no-scrollbar">
-              {(['all', 'pending', 'completed'] as const).map((status) => (
-                <button key={status} onClick={() => setFilterStatus(status)} className={`flex-shrink-0 px-4 py-1.5 rounded-lg text-xs font-bold transition-all capitalize ${filterStatus === status ? `${theme.primary} text-white shadow-md` : 'text-slate-500 hover:text-indigo-600'}`}>{status}</button>
-              ))}
-            </div>
-            <div className="flex bg-white/50 p-1 rounded-xl shadow-sm border border-slate-100 overflow-x-auto no-scrollbar">
-              {(['all', 'high', 'medium', 'low'] as const).map((priority) => (
-                <button key={priority} onClick={() => setFilterPriority(priority)} className={`flex-shrink-0 px-4 py-1.5 rounded-lg text-xs font-bold transition-all capitalize ${filterPriority === priority ? `${theme.primary} text-white shadow-md` : 'text-slate-500 hover:text-indigo-600'}`}>{priority === 'all' ? 'All' : priority}</button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg sm:text-xl font-bold">{filterStatus === 'all' ? 'Your Missions' : `${filterStatus.charAt(0).toUpperCase() + filterStatus.slice(1)} Missions`}<span className="ml-2 text-sm opacity-50 font-medium">({sortedTasks.length})</span></h2>
-          {tasks.filter(t => t.completed).length > 0 && filterStatus !== 'pending' && (
-            <button onClick={() => setTasks(t => t.filter(x => !x.completed))} className="text-xs font-bold text-rose-500 hover:bg-rose-50 px-3 py-1.5 rounded-lg transition-colors">Clear Done</button>
-          )}
-        </div>
-
-        <div className="space-y-3">
-          {sortedTasks.length === 0 ? (
-            <div className="py-20 text-center space-y-4 opacity-30"><div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm"><Filter className="w-8 h-8" /></div><p className="text-sm font-bold">No missions found</p></div>
-          ) : (
-            sortedTasks.map(task => <TaskItem key={task.id} task={task} onToggle={toggleTask} onUpdate={updateTask} onDelete={deleteTask} />)
-          )}
-        </div>
-      </main>
-
-      {/* Floating Action Buttons */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 sm:p-6 flex flex-col gap-4 z-40 pointer-events-none bg-gradient-to-t from-slate-50/90 to-transparent">
-        <div className="flex justify-center items-end gap-3 pointer-events-auto max-w-2xl mx-auto w-full">
-          <button 
-            onClick={handleAskAI} 
-            className={`flex-grow group relative flex items-center justify-center gap-2 sm:gap-3 py-4 sm:py-5 bg-slate-900 text-white rounded-2xl font-black text-base sm:text-lg shadow-2xl active:scale-95 transition-all`}
-          >
-            <Sparkles className="w-5 h-5 animate-pulse text-indigo-400" />
-            <span>DAILY STRATEGY</span>
-          </button>
-          
-          <button 
-            onClick={() => setIsAIChatOpen(true)}
-            className={`flex-shrink-0 p-4 sm:p-5 rounded-2xl shadow-2xl bg-gradient-to-br ${theme.gradient} text-white active:scale-90 transition-all border-2 border-white/20`}
-            title="AI Assistant"
-          >
-            <MessageSquareCode className="w-6 h-6 sm:w-7 sm:h-7" />
-          </button>
-        </div>
-        
-        <div className="w-full max-w-2xl mx-auto pointer-events-auto">
-          <AdBanner />
-        </div>
-      </div>
 
       <AIModal isOpen={isAIModalOpen} onClose={() => setIsAIModalOpen(false)} isLoading={isAILoading} content={aiContent} />
       <AIChatModal isOpen={isAIChatOpen} onClose={() => setIsAIChatOpen(false)} userName={currentUser.name} />
