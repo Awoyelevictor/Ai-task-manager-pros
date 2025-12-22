@@ -6,7 +6,6 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
   >
-
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="mobile-web-app-capable" content="yes">
@@ -17,23 +16,8 @@
 
   <title>AI Task Manager Pro</title>
 
-  <!-- TailwindCSS -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Load AdSense only on Web -->
-  <script>
-    const isNativeApp =
-      typeof window.Capacitor !== "undefined" ||
-      navigator.userAgent.includes("wv");
-
-    if (!isNativeApp) {
-      const adsScript = document.createElement("script");
-      adsScript.async = true;
-      adsScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-app-pub-4481364556222677";
-      adsScript.crossOrigin = "anonymous";
-      document.head.appendChild(adsScript);
-    }
-  </script>
 
   <script type="importmap">
   {
@@ -54,7 +38,7 @@
   <div id="root"></div>
 
   <script>
-    // Polyfill for older Android WebViews
+    // Polyfill for older Android WebViews that lack crypto.randomUUID
     if (!window.crypto?.randomUUID) {
       window.crypto = window.crypto || {};
       window.crypto.randomUUID = function () {
@@ -64,7 +48,7 @@
       };
     }
 
-    // Register service worker for PWA support
+    // Service Worker registration
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("/sw.js")
