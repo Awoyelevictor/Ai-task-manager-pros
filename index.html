@@ -17,21 +17,21 @@
 
   <title>AI Task Manager Pro</title>
 
+  <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Load AdSense ONLY on Web -->
+  <!-- Load AdSense only on Web -->
   <script>
     const isNativeApp =
       typeof window.Capacitor !== "undefined" ||
       navigator.userAgent.includes("wv");
 
     if (!isNativeApp) {
-      const s = document.createElement("script");
-      s.async = true;
-      s.src =
-        "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-app-pub-4481364556222677";
-      s.crossOrigin = "anonymous";
-      document.head.appendChild(s);
+      const adsScript = document.createElement("script");
+      adsScript.async = true;
+      adsScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-app-pub-4481364556222677";
+      adsScript.crossOrigin = "anonymous";
+      document.head.appendChild(adsScript);
     }
   </script>
 
@@ -54,6 +54,7 @@
   <div id="root"></div>
 
   <script>
+    // Polyfill for older Android WebViews
     if (!window.crypto?.randomUUID) {
       window.crypto = window.crypto || {};
       window.crypto.randomUUID = function () {
@@ -63,6 +64,7 @@
       };
     }
 
+    // Register service worker for PWA support
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker.register("/sw.js")
