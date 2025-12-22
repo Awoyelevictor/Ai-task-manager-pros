@@ -1,18 +1,12 @@
 import React from "react";
 
-/**
- * AdBanner
- * ----------
- * AdMob is fully handled by Median Native Plugins.
- * This component intentionally renders nothing.
- *
- * Why?
- * - Prevents Vercel build errors
- * - Avoids duplicate ads (policy-safe)
- * - Keeps web & native responsibilities separated
- */
 const AdBanner: React.FC = () => {
-  return null;
+  // Nothing is needed for web since Median handles ads natively
+  return (
+    <div className="w-full min-h-[60px] flex items-center justify-center text-xs text-slate-400">
+      Sponsored
+    </div>
+  );
 };
 
 export default AdBanner;
