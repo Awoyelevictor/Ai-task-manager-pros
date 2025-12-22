@@ -205,10 +205,11 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`fixed inset-0 flex flex-col transition-colors duration-1000 ${theme.bg} ${theme.text}`}>
+    // Replaced 'fixed inset-0' with 'relative h-[100dvh]' for better mobile compatibility
+    <div className={`relative w-full h-[100dvh] flex flex-col overflow-hidden transition-colors duration-1000 ${theme.bg} ${theme.text}`}>
       
-      {/* FIXED TOP HEADER */}
-      <header className={`z-50 px-4 pt-[max(env(safe-area-inset-top),16px)] pb-4 bg-white/70 backdrop-blur-xl border-b border-slate-200/50 transition-all`}>
+      {/* HEADER: Absolute position to stick to top inside the container */}
+      <header className={`absolute top-0 left-0 right-0 z-50 px-4 pt-[max(env(safe-area-inset-top),16px)] pb-4 bg-white/70 backdrop-blur-xl border-b border-slate-200/50 transition-all`}>
         <div className="max-w-2xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Sparkles className={`w-6 h-6 ${theme.accent}`} />
@@ -228,10 +229,11 @@ const App: React.FC = () => {
         </div>
       </header>
       
-      {/* SCROLLABLE MAIN CONTENT */}
+      {/* SCROLLABLE MAIN CONTENT: Fills remaining space, with padding for header/footer */}
       <div 
         ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto overflow-x-hidden w-full no-scrollbar"
+        className="flex-1 w-full h-full overflow-y-auto overflow-x-hidden no-scrollbar pt-20 pb-40 overscroll-contain"
+        style={{ WebkitOverflowScrolling: 'touch' }}
       >
         <div className="max-w-2xl mx-auto w-full px-4 sm:px-6 py-6 space-y-5">
           
@@ -313,7 +315,7 @@ const App: React.FC = () => {
           </div>
 
           {/* Mission List */}
-          <div className="space-y-3 pb-64">
+          <div className="space-y-3">
             <div className="flex justify-between items-center px-1">
               <h2 className="text-lg font-bold">{filterStatus === 'all' ? 'Your Missions' : `${filterStatus.charAt(0).toUpperCase() + filterStatus.slice(1)} Missions`}<span className="ml-2 text-sm opacity-50 font-medium">({sortedTasks.length})</span></h2>
               {tasks.filter(t => t.completed).length > 0 && filterStatus !== 'pending' && (
@@ -330,8 +332,8 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* FIXED BOTTOM ACTION BAR & AD BANNERS */}
-      <footer className={`z-50 bg-white/90 backdrop-blur-xl border-t border-slate-200/50 px-4 pt-3 pb-[max(env(safe-area-inset-bottom),20px)] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]`}>
+      {/* FOOTER: Absolute position to stick to bottom inside container */}
+      <footer className={`absolute bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-t border-slate-200/50 px-4 pt-3 pb-[max(env(safe-area-inset-bottom),20px)] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]`}>
         <div className="max-w-2xl mx-auto space-y-3">
           <div className="flex justify-center items-stretch gap-3">
             <button 
